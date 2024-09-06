@@ -8,7 +8,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Update and install necessary packages
 RUN DEBIAN_FRONTEND=noninteractive \
   apt-get update \
-  && apt-get install -y software-properties-common wget git curl
+  && apt-get install -y g++ software-properties-common wget git curl
 
 # Add the deadsnakes PPA to get Python 3.7
 RUN add-apt-repository ppa:deadsnakes/ppa \
