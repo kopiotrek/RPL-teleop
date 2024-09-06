@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  open-teach:
+    tty: true
+    stdin_open: true
+    build:
+      dockerfile: open_teach.dockerfile
+    ports:
+      - "8087:8087"  # Forward ZMQ port for Oculus
+      - "8089:8089"  # Forward ZMQ port for transformation
+      - "15001:15001"  # Forward port for 2D visualizer component
+    environment:
+      DISPLAY: $DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ~/.Xauthority:/root/.Xauthority
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
