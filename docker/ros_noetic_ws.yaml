@@ -6,11 +6,14 @@ services:
     stdin_open: true
     privileged: true
     build:
-      dockerfile: allegro_hand.dockerfile
+      dockerfile: ros_noetic_ws.dockerfile
     ports:
       - "8087:8087"  # Forward ZMQ port for Oculus
       - "8089:8089"  # Forward ZMQ port for transformation
       - "15001:15001"  # Forward port for 2D visualizer component
+      # - "22:22"
+      # - "2222:2222"
+    network_mode: "host"   
     environment:
       DISPLAY: $DISPLAY
     volumes:
@@ -18,6 +21,16 @@ services:
       - ~/.Xauthority:/root/.Xauthority
     devices:                                                                                                                                                                                  
         - "/dev:/dev/docker" 
+    # networks:
+    #   - network1
+
+# networks:
+#   network1:
+    # external: true
+    
+    # enable_ipv6: false
+    # driver_opts:
+      # com.docker.network.bridge.host_binding_ipv4: "127.1.0.1"
     # deploy:
     #   resources:
     #     reservations:
