@@ -4,12 +4,14 @@ services:
   open-teach:
     tty: true
     stdin_open: true
+    network_mode: "host"   
     build:
       dockerfile: open_teach.dockerfile
     ports:
       - "8087:8087"  # Forward ZMQ port for Oculus
       - "8089:8089"  # Forward ZMQ port for transformation
       - "15001:15001"  # Forward port for 2D visualizer component
+      - "11311:11311"  # Forward port for ROS communication
     environment:
       DISPLAY: $DISPLAY
     volumes:
@@ -22,3 +24,13 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+#     networks:
+#       - vm_network
+
+# networks:
+#   vm_network:
+#     driver: macvlan
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 172.30.0.0/16

@@ -23,14 +23,14 @@ RUN DEBIAN_FRONTEND=noninteractive \
 
 RUN DEBIAN_FRONTEND=noninteractive \
   && echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc \
-  && apt install -y python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential \
+  && apt install -y python3-importlib-metadata python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential \
   && rosdep init \
   && rosdep update -y
 
 RUN DEBIAN_FRONTEND=noninteractive \
   && apt install -y ros-noetic-gazebo-ros-pkgs ros-noetic-gazebo-ros-control
 
-  RUN DEBIAN_FRONTEND=noninteractive \
+RUN DEBIAN_FRONTEND=noninteractive \
   && apt install -y ufw iproute2 iputils-ping netcat nmap
 
 # !!! nano /etc/default/ufw and IPV6=no !!!

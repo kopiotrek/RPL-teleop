@@ -8,14 +8,30 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Update and install necessary packages
 RUN DEBIAN_FRONTEND=noninteractive \
   apt-get update \
-  && apt-get install -y g++ software-properties-common wget git curl
+  && apt-get install -y g++ software-properties-common wget git curl nano
 
 # Add the deadsnakes PPA to get Python 3.7
 RUN add-apt-repository ppa:deadsnakes/ppa \
   && apt-get install -y python3.7 python3.7-venv python3.7-dev g++
 
-# Update alternatives to set Python 3.7 as the default
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
+# # Update alternatives to set Python 3.7 as the default
+# RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1
+
+# ROS noetic install
+RUN DEBIAN_FRONTEND=noninteractive \
+  && sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' \
+  && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - \
+  && apt-get update
+
+RUN DEBIAN_FRONTEND=noninteractive \
+  && echo 'keyboard-configuration keyboard-configuration/layoutcode string us' | debconf-set-selections \
+  && apt-get install -y ros-noetic-desktop-full
+
+RUN DEBIAN_FRONTEND=noninteractive \
+  && echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc \
+  && apt install -y python3-importlib-metadata python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential \
+  && rosdep init \
+  && rosdep update -y
 
 # Clone the GitHub repository
 RUN git clone https://github.com/aadhithya14/Open-Teach.git
@@ -55,6 +71,10 @@ RUN wget https://developer.nvidia.com/isaac-gym-preview-4 \
 RUN source activate openteach_isaac \
   && cd /opt/isaacgym/python \
   && pip install -e . 
+
+# Install additional dependencies
+RUN DEBIAN_FRONTEND=noninteractive \
+  apt-get install -y net-tools iproute2 inetutils-ping
 
 # Clean up
 RUN rm -rf /var/lib/apt/lists/*
